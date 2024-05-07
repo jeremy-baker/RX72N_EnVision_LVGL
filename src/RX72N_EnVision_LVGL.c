@@ -29,6 +29,8 @@ void main_task(void *pvParameters)
 	_Bool ret;
 	uint32_t channel;
 
+	g_display0_cfg.input->format = LCD_CH0_IN_GR2_FORMAT;
+
     /* Create all other application tasks here */
 	lv_init();
 
