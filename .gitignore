@@ -1,0 +1,6 @@
+/HardwareDebug/
+/build/
+src/lvgl/*
+/JLinkLog.log
+.cache/*
+trash/*
