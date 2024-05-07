@@ -1,1 +1,1 @@
-# RSK_RX65N_2M_LVGL
+# RX_EnVision_LVGL
