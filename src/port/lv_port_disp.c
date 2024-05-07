@@ -34,17 +34,14 @@ static void disp_init(void);
 static void disp_flush(lv_display_t * disp, const lv_area_t * area, uint8_t * px_map);
 static void vsync_wait_cb(struct _lv_display_t * disp);
 
-#define DISPLAY_HSIZE_INPUT0 480
-#define DISPLAY_VSIZE_INPUT0 270
 
-static uint16_t g_framebuffer[2][DISPLAY_HSIZE_INPUT0 * DISPLAY_VSIZE_INPUT0]__attribute__((section(".framebuffer"), aligned(64), used));
+#define BYTES_PER_PIXEL 2 //LCD_CH0_IN_GR2_FORMAT = GLCDC_IN_FORMAT_16BITS_RGB565
 
- ;
+static uint8_t g_framebuffer[2][LCD_CH0_IN_GR2_HSIZE * LCD_CH0_IN_GR2_VSIZE * BYTES_PER_PIXEL]__attribute__((section(".framebuffer"), aligned(64), used));
 
- static SemaphoreHandle_t g_SemaphoreVsync = NULL;
-
- static glcdc_cfg_t          g_config;
- static glcdc_runtime_cfg_t  g_layer_change;
+static SemaphoreHandle_t g_SemaphoreVsync = NULL;
+static glcdc_cfg_t          g_config;
+static glcdc_runtime_cfg_t  g_layer_change;
 
 
 /**********************
@@ -72,7 +69,7 @@ void lv_port_disp_init(void)
     /*------------------------------------
      * Create a display and set a flush_cb
      * -----------------------------------*/
-    lv_display_t * disp = lv_display_create(DISPLAY_HSIZE_INPUT0, DISPLAY_VSIZE_INPUT0);
+    lv_display_t * disp = lv_display_create(LCD_CH0_IN_GR2_HSIZE, LCD_CH0_IN_GR2_VSIZE);
     lv_display_set_flush_cb(disp, disp_flush);
     lv_display_set_flush_wait_cb(disp, vsync_wait_cb);
     lv_display_set_buffers(disp, &g_framebuffer[0][0], &g_framebuffer[1][0], sizeof(g_framebuffer[0]), LV_DISPLAY_RENDER_MODE_DIRECT);
@@ -108,7 +105,6 @@ static void disp_init(void)
     {
         *p++ = RGB_565_BLACK;
     }
-
 
     R_GLCDC_PinSet();
 
