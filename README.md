@@ -1,1 +1,1 @@
-# RX_EnVision_LVGL
+# RX72N_EnVision_LVGL
