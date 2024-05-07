@@ -7,6 +7,7 @@
 #include "lvgl/src/display/lv_display_private.h"
 #include "r_glcdc_rx_if.h"
 #include "r_gpio_rx_if.h"
+#include "r_glcdc_rx_pinset.h"
 
 /*********************
  *      DEFINES
@@ -36,7 +37,7 @@ static void vsync_wait_cb(struct _lv_display_t * disp);
 #define DISPLAY_HSIZE_INPUT0 480
 #define DISPLAY_VSIZE_INPUT0 270
 
-static uint16_t g_framebuffer[2][DISPLAY_HSIZE_INPUT0 * DISPLAY_VSIZE_INPUT0]__attribute__((section(".framebuffer"), used));
+static uint16_t g_framebuffer[2][DISPLAY_HSIZE_INPUT0 * DISPLAY_VSIZE_INPUT0]__attribute__((section(".framebuffer"), aligned(64), used));
 
  ;
 
@@ -108,13 +109,10 @@ static void disp_init(void)
         *p++ = RGB_565_BLACK;
     }
 
-    err = R_GLCDC_Open(&g_config);
-    if (GLCDC_SUCCESS != err)
-    {
-    	while(1);
-    }
 
-    err = R_GLCDC_PinSet();
+    R_GLCDC_PinSet();
+
+    err = R_GLCDC_Open(&g_config);
     if (GLCDC_SUCCESS != err)
     {
     	while(1);
@@ -126,15 +124,15 @@ static void disp_init(void)
     	while(1);
     }
 
-    g_layer_change.input = g_config.input[GLCDC_FRAME_LAYER_1];
-    g_layer_change.chromakey = g_config.chromakey[GLCDC_FRAME_LAYER_1];
-    g_layer_change.blend = g_config.blend[GLCDC_FRAME_LAYER_1];
+    g_layer_change.input = g_config.input[GLCDC_FRAME_LAYER_2];
+    g_layer_change.chromakey = g_config.chromakey[GLCDC_FRAME_LAYER_2];
+    g_layer_change.blend = g_config.blend[GLCDC_FRAME_LAYER_2];
 
     layer_change.input.p_base = (uint32_t *)&g_framebuffer[1][0];
 
     do
     {
-        err = R_GLCDC_LayerChange(GLCDC_FRAME_LAYER_1, &g_layer_change);
+        err = R_GLCDC_LayerChange(GLCDC_FRAME_LAYER_2, &g_layer_change);
     } while (GLCDC_ERR_INVALID_UPDATE_TIMING == err);
 
     /* Display ON */
@@ -208,7 +206,7 @@ static void disp_flush(lv_display_t * display, const lv_area_t * area, uint8_t *
 
     do
     {
-        err = R_GLCDC_LayerChange(GLCDC_FRAME_LAYER_1, &g_layer_change);
+        err = R_GLCDC_LayerChange(GLCDC_FRAME_LAYER_2, &g_layer_change);
     } while (GLCDC_ERR_INVALID_UPDATE_TIMING == err);
 
 }
