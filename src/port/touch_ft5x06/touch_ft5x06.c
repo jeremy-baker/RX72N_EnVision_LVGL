@@ -19,6 +19,9 @@ volatile sci_iic_info_t g_sci_iic_cfg;
 #define FT5X06_UP            1
 #define FT5X06_CONTACT       2
 
+
+#define FT5X06_SLAVE_ADDRESS 0x38
+
 #define FT5X06_REG_TD_STATUS 0x02
 
 #define extract_e(t) ((uint8_t) ((t).event))
@@ -58,6 +61,12 @@ typedef struct st_ft5x06_payload
 
 #define TOUCH_SCI_IIC_CHANNEL   6
 
+#define TOUCH_RESET    GPIO_PORT_6_PIN_6
+#define TOUCH_IRQ      GPIO_PORT_3_PIN_4
+
+#define TOUCH_SCL      GPIO_PORT_3_PIN_3
+#define TOUCH_SDA      GPIO_PORT_3_PIN_2
+
 
 /**********************************************************************************************************************
  * Function definitions
@@ -75,7 +84,6 @@ void touch_irq_cb(void *pargs)
 	portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
 
 }
-
 
 /* Called from touch i2c isr routine */
 void touch_i2c_callback(void)
@@ -155,12 +163,6 @@ fsp_err_t i2c_wait(void)
     return ret;
 }
 
-#define TOUCH_RESET    GPIO_PORT_6_PIN_6
-#define TOUCH_IRQ      GPIO_PORT_3_PIN_4
-
-#define TOUCH_SCL      GPIO_PORT_3_PIN_3
-#define TOUCH_SDA      GPIO_PORT_3_PIN_2
-
 /*******************************************************************************************************************//**
  * Reset the FT5X06
  **********************************************************************************************************************/
@@ -200,15 +202,15 @@ fsp_err_t ft5x06_init(void)
     irq_handle_t my_handle;
 
 	g_i2c_event_group = xEventGroupCreate();
-    if(NULL == g_irq_binary_semaphore )
+    if(NULL == g_i2c_event_group )
     {
-        //while(1);
+        while(1);
     }
 
 	g_irq_binary_semaphore = xSemaphoreCreateBinary();
     if(NULL == g_irq_binary_semaphore )
     {
-        //while(1);
+        while(1);
     }
 
 
@@ -218,31 +220,6 @@ fsp_err_t ft5x06_init(void)
     g_sci_iic_cfg.dev_sts      = SCI_IIC_NO_INIT;
     g_sci_iic_cfg.ch_no        = TOUCH_SCI_IIC_CHANNEL;
 
-    /* Set P33 & P32 to be used as SCI pin, Open Drain */
-    config.analog_enable = false;
-    config.irq_enable = false;
-    config.pin_function = 0xA; //001010b
-    result= R_MPC_Write(TOUCH_SDA, &config);
-	if (MPC_SUCCESS != result)
-	{
-		while(1);
-	}
-
-    config.analog_enable = false;
-    config.irq_enable = false;
-    config.pin_function = 0xA; //001010b
-    result= R_MPC_Write(TOUCH_SCL, &config);
-	if (MPC_SUCCESS != result)
-	{
-		while(1);
-	}
-
-    R_GPIO_PinControl(TOUCH_SDA, GPIO_CMD_OUT_OPEN_DRAIN_N_CHAN);
-    R_GPIO_PinControl(TOUCH_SCL, GPIO_CMD_OUT_OPEN_DRAIN_N_CHAN);
-
-    R_GPIO_PinControl(TOUCH_SDA, GPIO_CMD_ASSIGN_TO_PERIPHERAL);
-    R_GPIO_PinControl(TOUCH_SCL, GPIO_CMD_ASSIGN_TO_PERIPHERAL);
-
     /* Open I2C peripheral */
     err = R_SCI_IIC_Open((sci_iic_info_t *)&g_sci_iic_cfg);
     if (SCI_IIC_SUCCESS != err)
@@ -250,7 +227,7 @@ fsp_err_t ft5x06_init(void)
     	while(1);
     }
 
-    result = R_IRQ_Open(4, IRQ_TRIG_FALLING, IRQ_PRI_5, &my_handle, touch_irq_cb);
+    result = R_IRQ_Open(IRQ_NUM_4, IRQ_TRIG_FALLING, IRQ_PRI_5, &my_handle, touch_irq_cb);
     if (IRQ_SUCCESS != result)
     {
     	while(1);
@@ -266,7 +243,6 @@ fsp_err_t ft5x06_init(void)
 		while(1);
 	}
 
-
     /* Enable interrupt */
     result = R_IRQ_InterruptEnable (my_handle, true);
     if (FSP_SUCCESS != result)
@@ -276,10 +252,6 @@ fsp_err_t ft5x06_init(void)
 
     return err;
 }
-
-
-#define FT5X06_SLAVE_ADDRESS 0x38
-
 
 /*******************************************************************************************************************//**
  * Get all touch data from the FT5X06 touch controller
