@@ -2,7 +2,7 @@
 #define HAL_DATA_H_
 
 #include "platform.h"
-//#include "dave_driver.h"
+#include "dave_driver.h"
 #include "r_glcdc_rx_if.h"
 
 void __BKPT(int number);

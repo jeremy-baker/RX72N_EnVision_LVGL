@@ -57,6 +57,7 @@
     <Segment id="Component">
         <Setting id="r_bsp" value="FIT"/>
         <Setting id="Config_TMR0" value="CG"/>
+        <Setting id="r_drw2d_rx" value="FIT"/>
         <Setting id="r_cmt_rx" value="FIT"/>
         <Setting id="r_irq_rx" value="FIT"/>
         <Setting id="r_glcdc_rx" value="FIT"/>
@@ -113,7 +114,7 @@
             <Setting id="BSP_CFG_NONCACHEABLE_AREA0_SIZE" value="0x0"/>
             <Setting id="BSP_CFG_ROM_CACHE_ENABLE" value="1"/>
             <Setting id="BSP_CFG_USER_LOCKING_TYPE" value="bsp_lock_t"/>
-            <Setting id="BSP_CFG_HEAP_BYTES" value="0x4000"/>
+            <Setting id="BSP_CFG_HEAP_BYTES" value="0x4800"/>
             <Setting id="BSP_CFG_FIT_IPL_MAX" value="0xF"/>
             <Setting id="BSP_CFG_BOOTLOADER_PROJECT" value="0"/>
             <Setting id="BSP_CFG_NONCACHEABLE_AREA0_ADDR" value="0xFFE00000"/>
@@ -151,6 +152,7 @@
             <Setting id="TMO0OutputEnable" value="Disable"/>
             <Setting id="TCNTEnable" value="Disable"/>
         </Segment>
+        <Segment component="r_drw2d_rx1.12" id="r_drw2d_rx" source="com.renesas.smc.tools.swcomponent.fit.source"/>
         <Segment component="r_cmt_rx5.60" id="r_cmt_rx" source="com.renesas.smc.tools.swcomponent.fit.source">
             <Setting id="CMT_CFG_CH2_EN_NESTED_INT" value="0"/>
             <Setting id="CMT_CFG_CH1_EN_NESTED_INT" value="0"/>

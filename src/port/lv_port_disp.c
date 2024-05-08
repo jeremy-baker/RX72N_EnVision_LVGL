@@ -33,6 +33,7 @@
 static void disp_init(void);
 static void disp_flush(lv_display_t * disp, const lv_area_t * area, uint8_t * px_map);
 static void vsync_wait_cb(struct _lv_display_t * disp);
+static void enable_dave2d_drw_interrupt(void);
 
 
 #define BYTES_PER_PIXEL 2 //LCD_CH0_IN_GR2_FORMAT = GLCDC_IN_FORMAT_16BITS_RGB565
@@ -42,6 +43,8 @@ static uint8_t g_framebuffer[2][LCD_CH0_IN_GR2_HSIZE * LCD_CH0_IN_GR2_VSIZE * BY
 static SemaphoreHandle_t g_SemaphoreVsync = NULL;
 static glcdc_cfg_t          g_config;
 static glcdc_runtime_cfg_t  g_layer_change;
+
+extern void drw_int_isr(void);
 
 
 /**********************
@@ -65,6 +68,8 @@ void lv_port_disp_init(void)
 
 
     disp_init();
+
+    enable_dave2d_drw_interrupt();
 
     /*------------------------------------
      * Create a display and set a flush_cb
@@ -139,6 +144,25 @@ static void disp_init(void)
 
     /* Enable the backlight */
     R_GPIO_PinWrite(DISP_BLEN, GPIO_LEVEL_HIGH);
+}
+
+extern void drw_int_isr(void);
+
+//#define DAVE_IRQ_IPR     (5)    /* Interrupt priority of DRW2D         */
+//modified in src/smc_gen/r_drw2d_rx/src/dave_irq_rx.c from (7)
+
+static void enable_dave2d_drw_interrupt(void)
+{
+    bsp_int_ctrl_t grpal1;
+
+    /* Specify the priority of the group interrupt. */
+    grpal1.ipl = 5;
+
+    /* Use the BSP API to register the interrupt handler for DRW2D. */
+    R_BSP_InterruptWrite(BSP_INT_SRC_AL1_DRW2D_DRW_IRQ, (bsp_int_cb_t)drw_int_isr);
+
+    /* Use the BSP API to enable the group interrupt. */
+    R_BSP_InterruptControl(BSP_INT_SRC_AL1_DRW2D_DRW_IRQ, BSP_INT_CMD_GROUP_INTERRUPT_ENABLE, (void *)&grpal1);
 }
 
 void glcdc_callback(glcdc_callback_args_t *p_args)
