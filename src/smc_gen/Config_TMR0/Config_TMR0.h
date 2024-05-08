@@ -18,21 +18,19 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name        : r_smc_entry.h
-* Version          : 1.0.130
+* File Name        : Config_TMR0.h
+* Component Version: 1.10.0
 * Device(s)        : R5F572NNHxFB
-* Description      : SMC platform header file.
+* Description      : This file implements device driver for Config_TMR0.
 ***********************************************************************************************************************/
 
-#ifndef SMC_ENTRY_H
-#define SMC_ENTRY_H
+#ifndef CFG_Config_TMR0_H
+#define CFG_Config_TMR0_H
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
-#include "r_cg_macrodriver.h"
-#include "Pin.h"
-#include "Config_TMR0.h"
+#include "r_cg_tmr.h"
 
 /***********************************************************************************************************************
 Macro definitions (Register bit)
@@ -41,6 +39,9 @@ Macro definitions (Register bit)
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
+#define TMR0_PCLK_COUNTER_DIVISION                    (1)
+#define _77_TMR0_COMP_MATCH_VALUE_A                   (0x77U)
+#define _77_TMR0_COMP_MATCH_VALUE_B                   (0x77U)
 
 /***********************************************************************************************************************
 Typedef definitions
@@ -49,7 +50,10 @@ Typedef definitions
 /***********************************************************************************************************************
 Global functions
 ***********************************************************************************************************************/
+void R_Config_TMR0_Create(void);
+void R_Config_TMR0_Create_UserInit(void);
+void R_Config_TMR0_Start(void);
+void R_Config_TMR0_Stop(void);
 /* Start user code for function. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 #endif
-

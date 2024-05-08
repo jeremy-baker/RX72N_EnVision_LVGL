@@ -15,6 +15,7 @@
 #include "lvgl/demos/lv_demos.h"
 #include "hal_data.h"
 #include "r_cmt_rx_if.h"
+#include "user_task.h"
 
 display_t g_display0_cfg;
 
@@ -23,7 +24,7 @@ void timer_tick_callback(void * pdata)
     lv_tick_inc(1);
 }
 
-void main_task(void *pvParameters)
+void main_task_user(void *pvParameters)
 {
 
 	_Bool ret;

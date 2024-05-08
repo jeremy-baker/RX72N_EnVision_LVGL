@@ -31,6 +31,8 @@
  **********************************************************************************************************************/
 #include "FreeRTOS.h"
 #include "freertos_start.h"
+#include "../frtos_skeleton/task_function.h"
+#include "task.h"
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
@@ -44,6 +46,7 @@
  **********************************************************************************************************************/
 void Kernel_Object_init (void);
 void Object_init_manual (void);
+BaseType_t ret;
 /***********************************************************************************************************************
  * Function Name: Kernel_Object_init
  * Description  : This function initializes FreeRTOS objects.
@@ -77,4 +80,12 @@ void Kernel_Object_init (void)
 void Object_init_manual (void)
 {
     /************** task creation ****************************/
+    ret = xTaskCreate(main_task, "MAIN_TASK", 12288, NULL, 3, NULL);
+    if (pdPASS != ret)
+    {
+        while (1)
+        {
+            /* Failed! Task can not be created. */
+        }
+    }
 } /* End of function Object_init_manual()*/

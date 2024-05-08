@@ -18,38 +18,87 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name        : r_smc_entry.h
-* Version          : 1.0.130
+* File Name        : Config_TMR0.c
+* Component Version: 1.10.0
 * Device(s)        : R5F572NNHxFB
-* Description      : SMC platform header file.
+* Description      : This file implements device driver for Config_TMR0.
 ***********************************************************************************************************************/
 
-#ifndef SMC_ENTRY_H
-#define SMC_ENTRY_H
+/***********************************************************************************************************************
+Pragma directive
+***********************************************************************************************************************/
+/* Start user code for pragma. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
-#include "Pin.h"
 #include "Config_TMR0.h"
-
-/***********************************************************************************************************************
-Macro definitions (Register bit)
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Macro definitions
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Typedef definitions
-***********************************************************************************************************************/
-
-/***********************************************************************************************************************
-Global functions
-***********************************************************************************************************************/
-/* Start user code for function. Do not edit comment generated here */
+/* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
-#endif
+#include "r_cg_userdefine.h"
 
+/***********************************************************************************************************************
+Global variables and functions
+***********************************************************************************************************************/
+/* Start user code for global. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
+
+/***********************************************************************************************************************
+* Function Name: R_Config_TMR0_Create
+* Description  : This function initializes the TMR0 channel
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_Config_TMR0_Create(void)
+{
+
+    /* Cancel TMR module stop state */
+    MSTP(TMR01) = 0U;
+
+    /* Set counter clear and interrupt */
+    TMR0.TCR.BYTE = _00_TMR_CNT_CLR_DISABLE | _00_TMR_CMIA_INT_DISABLE | _00_TMR_CMIB_INT_DISABLE | 
+                    _00_TMR_OVI_INT_DISABLE;
+
+    /* Set A/D trigger and output */
+    TMR0.TCSR.BYTE = _00_TMR_AD_TRIGGER_DISABLE | _E0_TMR02_TCSR_DEFAULT;
+
+    /* Set compare match value */ 
+    TMR0.TCORA = _77_TMR0_COMP_MATCH_VALUE_A;
+    TMR0.TCORB = _77_TMR0_COMP_MATCH_VALUE_B;
+
+    R_Config_TMR0_Create_UserInit();
+}
+
+/***********************************************************************************************************************
+* Function Name: R_Config_TMR0_Start
+* Description  : This function starts the TMR0 channel
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_Config_TMR0_Start(void)
+{
+
+    /* Start counting */
+    TMR0.TCCR.BYTE = _08_TMR_CLK_SRC_PCLK | _00_TMR_PCLK_DIV_1;
+}
+
+/***********************************************************************************************************************
+* Function Name: R_Config_TMR0_Stop
+* Description  : This function stops the TMR0 channel
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+
+void R_Config_TMR0_Stop(void)
+{
+
+    /* Stop counting */ 
+    TMR0.TCCR.BYTE = _00_TMR_CLK_DISABLED;
+}
+
+/* Start user code for adding. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */

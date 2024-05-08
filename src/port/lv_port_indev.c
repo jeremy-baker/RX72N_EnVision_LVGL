@@ -21,7 +21,7 @@
 static void touchpad_init(void);
 static void touchpad_read(lv_indev_t * indev, lv_indev_data_t * data);
 static bool touchpad_is_pressed(void);
-//static void touchpad_get_xy(int32_t * x, int32_t * y, touch_event_t * touch_event);
+static void touchpad_get_xy(int32_t * x, int32_t * y, touch_event_t * touch_event);
 
 /**********************
  *  STATIC VARIABLES
@@ -91,7 +91,7 @@ static void touchpad_init(void)
 /*Will be called by the library to read the touchpad*/
 static void touchpad_read(lv_indev_t * indev_drv, lv_indev_data_t * data)
 {
-#if 0
+#if 1
     FSP_PARAMETER_NOT_USED(indev_drv);
     static int32_t last_x = 0;
     static int32_t last_y = 0;
@@ -137,7 +137,7 @@ static bool touchpad_is_pressed(void)
 #endif
 }
 
-#if 0
+#if 1
 touch_data_t g_touch_data;
 
 /*Get the x and y coordinates if the touchpad is pressed*/

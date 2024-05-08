@@ -87,7 +87,10 @@ static void disp_init(void)
     glcdc_runtime_cfg_t  layer_change;
 
     R_GPIO_PinControl(LCD_DISPON, GPIO_CMD_OUT_CMOS);
+    R_GPIO_PortDirectionSet(GPIO_PORT_B, GPIO_DIRECTION_OUTPUT, (1<<3));
+
     R_GPIO_PinControl(DISP_BLEN, GPIO_CMD_OUT_CMOS);
+    R_GPIO_PortDirectionSet(GPIO_PORT_6, GPIO_DIRECTION_OUTPUT, (1<<7));
 
     R_GPIO_PinWrite(DISP_BLEN, GPIO_LEVEL_LOW);
 

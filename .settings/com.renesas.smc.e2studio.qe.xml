@@ -56,7 +56,7 @@
     </Segment>
     <Segment id="Component">
         <Setting id="r_bsp" value="FIT"/>
-        <Setting id="r_drw2d_rx" value="FIT"/>
+        <Setting id="Config_TMR0" value="CG"/>
         <Setting id="r_cmt_rx" value="FIT"/>
         <Setting id="r_irq_rx" value="FIT"/>
         <Setting id="r_glcdc_rx" value="FIT"/>
@@ -133,13 +133,30 @@
             <Setting id="BSP_CFG_USER_WARM_START_CALLBACK_POST_INITC_ENABLED" value="0"/>
             <Setting id="BSP_CFG_EBMAPCR_1ST_PRIORITY" value="0"/>
         </Segment>
-        <Segment component="r_drw2d_rx1.12" id="r_drw2d_rx" source="com.renesas.smc.tools.swcomponent.fit.source"/>
+        <Segment component="com.renesas.smc.tools.swcomponent.codegenerator.tmr" id="Config_TMR0" source="com.renesas.smc.tools.swcomponent.codegenerator.source">
+            <Setting id="OutputMatchB" value="Nochange"/>
+            <Setting id="CompareMatchBValue" value="2"/>
+            <Setting id="TCORAOption" value="Level15"/>
+            <Setting id="OutputMatchA" value="Nochange"/>
+            <Setting id="TCORAEnable" value="Disable"/>
+            <Setting id="TCORBEnable" value="Disable"/>
+            <Setting id="CompareMatchAValue" value="2"/>
+            <Setting id="TCORBOption" value="Level15"/>
+            <Setting id="ClockSourceOption" value="PCLK"/>
+            <Setting id="CountMode" value="8bitMode"/>
+            <Setting id="TCNTOption" value="Level15"/>
+            <Setting id="CounterClearOption" value="Disabled"/>
+            <Setting id="MatchValueOptionA" value="us"/>
+            <Setting id="S12ADEnable" value="Disable"/>
+            <Setting id="TMO0OutputEnable" value="Disable"/>
+            <Setting id="TCNTEnable" value="Disable"/>
+        </Segment>
         <Segment component="r_cmt_rx5.60" id="r_cmt_rx" source="com.renesas.smc.tools.swcomponent.fit.source">
             <Setting id="CMT_CFG_CH2_EN_NESTED_INT" value="0"/>
             <Setting id="CMT_CFG_CH1_EN_NESTED_INT" value="0"/>
             <Setting id="CMT_CFG_CH3_EN_NESTED_INT" value="0"/>
             <Setting id="CMT_CFG_CH0_EN_NESTED_INT" value="0"/>
-            <Setting id="CMT_RX_CFG_IPR" value="5"/>
+            <Setting id="CMT_RX_CFG_IPR" value="3"/>
         </Segment>
         <Segment component="r_irq_rx4.40" id="r_irq_rx" source="com.renesas.smc.tools.swcomponent.fit.source">
             <Setting id="IRQ_CFG_PARAM_CHECKING" value="BSP_CFG_PARAM_CHECKING_ENABLE"/>
@@ -189,7 +206,7 @@
             <Setting id="IMGC_GAMMA_R_TH_02" value="128"/>
             <Setting id="IMGC_GAMMA_R_TH_03" value="192"/>
             <Setting id="LCD_CH0_OUT_EDGE" value="GLCDC_SIGNAL_SYNC_EDGE_RISING"/>
-            <Setting id="LCD_CH0_DETECT_GR2UF" value="false"/>
+            <Setting id="LCD_CH0_DETECT_GR2UF" value="true"/>
             <Setting id="IMGC_GAMMA_R_TH_04" value="256"/>
             <Setting id="IMGC_GAMMA_R_TH_05" value="320"/>
             <Setting id="IMGC_GAMMA_R_TH_06" value="384"/>
@@ -225,15 +242,15 @@
             <Setting id="LCD_CH0_IN_GR1_BG_COLOR" value="0x00000000"/>
             <Setting id="LCD_CH0_BLEND_GR2_END_COORD_Y" value="0"/>
             <Setting id="LCD_CH0_CHROMAKEY_GR2_AFTER_ARGB" value="0x00000000"/>
-            <Setting id="LCD_CH0_DETECT_VPOS" value="false"/>
+            <Setting id="LCD_CH0_DETECT_VPOS" value="true"/>
             <Setting id="LCD_CH0_BLEND_GR2_END_COORD_X" value="0"/>
-            <Setting id="LCD_CH0_CALLBACK_ENABLE" value="false"/>
+            <Setting id="LCD_CH0_CALLBACK_ENABLE" value="true"/>
             <Setting id="LCD_CH0_BLEND_GR1_END_COORD_Y" value="0"/>
             <Setting id="LCD_CH0_CLUT_GR1_START" value="0"/>
             <Setting id="IMGC_GAMMA_R_GAIN_15" value="919"/>
             <Setting id="LCD_CH0_IN_GR2_BG_COLOR" value="0x00000000"/>
             <Setting id="LCD_CH0_W_VFP" value="8"/>
-            <Setting id="LCD_CH0_INTERRUPT_GR2UF_ENABLE" value="false"/>
+            <Setting id="LCD_CH0_INTERRUPT_GR2UF_ENABLE" value="true"/>
             <Setting id="LCD_CH0_BLEND_GR1_END_COORD_X" value="0"/>
             <Setting id="LCD_CH0_TCON_PIN_HSYNC" value="GLCDC_TCON_PIN_2"/>
             <Setting id="LCD_CH0_BLEND_GR1_VISIBLE" value="true"/>
@@ -283,7 +300,7 @@
             <Setting id="IMGC_BRIGHT_OUTCTL_ACTIVE" value="true"/>
             <Setting id="LCD_CH0_BLEND_GR1_FRAME_EDGE" value="false"/>
             <Setting id="LCD_CH0_CHROMAKEY_GR1_AFTER_ARGB" value="0x00000000"/>
-            <Setting id="LCD_CH0_INTERRUPT_VPOS_ENABLE" value="false"/>
+            <Setting id="LCD_CH0_INTERRUPT_VPOS_ENABLE" value="true"/>
             <Setting id="IMGC_GAMMA_B_TH_09" value="576"/>
             <Setting id="LCD_CH0_TCON_PIN_DE" value="GLCDC_TCON_PIN_3"/>
             <Setting id="USE_QE_DISPLAY_CONFIGURATION" value="0"/>

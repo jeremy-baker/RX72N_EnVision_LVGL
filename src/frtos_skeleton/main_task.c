@@ -16,9 +16,19 @@
 *
 * Copyright (C) 2019 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
+/***********************************************************************************************************************
+Includes   <System Includes> , "Project Includes"
+***********************************************************************************************************************/
+#include "task_function.h"
+/* Start user code for import. Do not edit comment generated here */
+#include "user_task.h"
+/* End user code. Do not edit comment generated here */
 
-#ifndef TASK_FUNCTION_H_
-#define TASK_FUNCTION_H_
-void main_task(void * pvParameters);
-
-#endif /* TASK_FUNCTION_H_ */
+void main_task(void * pvParameters)
+{
+/* Start user code for function. Do not edit comment generated here */
+	 main_task_user(pvParameters);
+/* End user code. Do not edit comment generated here */
+}
+/* Start user code for other. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */

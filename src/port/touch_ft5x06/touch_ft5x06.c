@@ -167,6 +167,7 @@ fsp_err_t i2c_wait(void)
 static void ft5x06_reset ()
 {
     R_GPIO_PinControl(TOUCH_RESET, GPIO_CMD_OUT_CMOS);
+    R_GPIO_PortDirectionSet(GPIO_PORT_6, GPIO_DIRECTION_OUTPUT, (1<<6));
 
     /** Reset touch chip by setting GPIO reset pin low. */
     R_GPIO_PinWrite(TOUCH_RESET, GPIO_LEVEL_LOW);
@@ -181,9 +182,6 @@ static void ft5x06_reset ()
     R_BSP_SoftwareDelay(10, BSP_DELAY_MILLISECS);
 }
 
-uint8_t g_slave_addr_ft5x06[1];
-
-irq_handle_t my_handle;
 
 
 /*******************************************************************************************************************//**
@@ -199,17 +197,18 @@ fsp_err_t ft5x06_init(void)
 	sci_iic_return_t err;
     irq_err_t result;
     mpc_config_t config;
+    irq_handle_t my_handle;
 
 	g_i2c_event_group = xEventGroupCreate();
     if(NULL == g_irq_binary_semaphore )
     {
-        while(1);
+        //while(1);
     }
 
 	g_irq_binary_semaphore = xSemaphoreCreateBinary();
     if(NULL == g_irq_binary_semaphore )
     {
-        while(1);
+        //while(1);
     }
 
 
@@ -280,7 +279,7 @@ fsp_err_t ft5x06_init(void)
 
 
 #define FT5X06_SLAVE_ADDRESS 0x38
-uint8_t g_iic_write_data[1];
+
 
 /*******************************************************************************************************************//**
  * Get all touch data from the FT5X06 touch controller
@@ -291,40 +290,22 @@ void ft5x06_payload_get (touch_data_t * touch_data)
     touch_coord_t    new_touch;
     ft5x06_payload_t touch_payload;
     fsp_err_t err;
+    uint8_t iic_write_data;
+    uint8_t slave_addr_ft5x06;
 
     /* Clear payload struct */
     memset(&touch_payload, 0, sizeof(ft5x06_payload_t));
 
     /* Read the data about the touch point(s) */
-    g_slave_addr_ft5x06[0] = FT5X06_SLAVE_ADDRESS;
-    g_iic_write_data[0]    = FT5X06_REG_TD_STATUS;
+    slave_addr_ft5x06 = FT5X06_SLAVE_ADDRESS;
+    iic_write_data    = FT5X06_REG_TD_STATUS;
 
-    g_sci_iic_cfg.p_slv_adr   = g_slave_addr_ft5x06;
+    g_sci_iic_cfg.p_slv_adr   = &slave_addr_ft5x06;
     g_sci_iic_cfg.callbackfunc = &touch_i2c_callback;
-    g_sci_iic_cfg.p_data1st    = g_iic_write_data;
-    g_sci_iic_cfg.p_data2nd    = FIT_NO_PTR;
-    g_sci_iic_cfg.cnt1st = 1;
-    g_sci_iic_cfg.cnt2nd = 0;
-    g_sci_iic_cfg.dev_sts      = SCI_IIC_NO_INIT;
-    g_sci_iic_cfg.ch_no        = TOUCH_SCI_IIC_CHANNEL;
-
-    /* Write TD_STATUS address */
-    err = R_SCI_IIC_MasterSend((sci_iic_info_t *)&g_sci_iic_cfg);
-    if (SCI_IIC_SUCCESS != err)
-    {
-        while(1);
-    }
-    else
-    {
-    	while(SCI_IIC_FINISH != g_sci_iic_cfg.dev_sts);
-    }
-
-    g_sci_iic_cfg.p_slv_adr   = g_slave_addr_ft5x06;
-    g_sci_iic_cfg.callbackfunc = &touch_i2c_callback;
-    g_sci_iic_cfg.p_data1st    = (uint8_t *)&touch_payload;
-    g_sci_iic_cfg.p_data2nd    = FIT_NO_PTR;
-    g_sci_iic_cfg.cnt1st       = sizeof(ft5x06_payload_t);
-    g_sci_iic_cfg.cnt2nd       = 0;
+    g_sci_iic_cfg.p_data1st    = &iic_write_data;
+    g_sci_iic_cfg.p_data2nd    = (uint8_t *)&touch_payload;
+    g_sci_iic_cfg.cnt1st       = sizeof(iic_write_data);
+    g_sci_iic_cfg.cnt2nd       = sizeof(ft5x06_payload_t);
     g_sci_iic_cfg.dev_sts      = SCI_IIC_NO_INIT;
     g_sci_iic_cfg.ch_no        = TOUCH_SCI_IIC_CHANNEL;
 
@@ -336,7 +317,11 @@ void ft5x06_payload_get (touch_data_t * touch_data)
     }
     else
     {
-    	while(SCI_IIC_FINISH != g_sci_iic_cfg.dev_sts);
+    	while((SCI_IIC_FINISH != g_sci_iic_cfg.dev_sts) && (SCI_IIC_NACK != g_sci_iic_cfg.dev_sts));
+    	if (SCI_IIC_NACK == g_sci_iic_cfg.dev_sts)
+    	{
+    		return;
+    	}
     }
 
     /* Process the raw data for the touch point(s) into useful data */

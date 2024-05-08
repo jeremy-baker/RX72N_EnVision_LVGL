@@ -198,23 +198,23 @@
 
 /* Detection */
 #if !defined(QE_DISPLAY_CONFIGURATION) /* This option is set in QE for Display[RX] when using QE for Display[RX] */
-#define LCD_CH0_DETECT_VPOS                 (false)                     /* detection.vpos_detect */
+#define LCD_CH0_DETECT_VPOS                 (true)                     /* detection.vpos_detect */
 #endif
 
 #define LCD_CH0_DETECT_GR1UF                (false)                     /* detection.gr1uf_detect   */
-#define LCD_CH0_DETECT_GR2UF                (false)                     /* detection.gr2uf_detect   */
+#define LCD_CH0_DETECT_GR2UF                (true)                     /* detection.gr2uf_detect   */
 
 /* Interrupt */
 #if !defined(QE_DISPLAY_CONFIGURATION) /* This option is set in QE for Display[RX] when using QE for Display[RX] */
-#define LCD_CH0_INTERRUPT_VPOS_ENABLE       (false)                     /* interrupt.vpos_enable */
+#define LCD_CH0_INTERRUPT_VPOS_ENABLE       (true)                     /* interrupt.vpos_enable */
 #endif
 
 #define LCD_CH0_INTERRUPT_GR1UF_ENABLE      (false)                     /* interrupt.gr1uf_enable   */
-#define LCD_CH0_INTERRUPT_GR2UF_ENABLE      (false)                     /* interrupt.gr2uf_enable   */
+#define LCD_CH0_INTERRUPT_GR2UF_ENABLE      (true)                     /* interrupt.gr2uf_enable   */
 
 /* Callback function */
 #if !defined(QE_DISPLAY_CONFIGURATION) /* This option is set in QE for Display[RX] when using QE for Display[RX] */
-#define LCD_CH0_CALLBACK_ENABLE             (false)
+#define LCD_CH0_CALLBACK_ENABLE             (true)
 #define LCD_CH0_PCALLBACK                   (glcdc_callback)            /* pcallback */
 #endif
 
